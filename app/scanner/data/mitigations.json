@@ -1,0 +1,90 @@
+{
+  "tls.certificate_expired": {
+    "plan": "Renew the certificate with your CA, deploy the replacement to every TLS endpoint, and verify the full chain and validity window.",
+    "references": ["https://letsencrypt.org/docs/renewal/", "https://datatracker.ietf.org/doc/html/rfc5280"]
+  },
+  "tls.hostname_mismatch": {
+    "plan": "Issue and deploy a certificate whose subjectAltName covers the requested hostname; verify every load balancer and CDN edge.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc9525", "https://datatracker.ietf.org/doc/html/rfc5280"]
+  },
+  "tls.certificate_untrusted": {
+    "plan": "Deploy the complete leaf and intermediate chain from a publicly trusted CA and remove private or self-signed certificates from public endpoints.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc5280"]
+  },
+  "tls.self_signed": {
+    "plan": "Replace the public endpoint certificate with one issued by a publicly trusted CA. Keep self-signed certificates limited to explicitly managed private environments.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc5280"]
+  },
+  "tls.weak_cipher": {
+    "plan": "Remove RC4, 3DES, NULL and export cipher suites from the TLS configuration at the origin, load balancer and CDN. Retest negotiated suites after deployment.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc9325", "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"]
+  },
+  "tls.certificate_expiring": {
+    "plan": "Renew before expiry and automate renewal monitoring; confirm the renewed certificate is active at all endpoints.",
+    "references": ["https://letsencrypt.org/docs/renewal/"]
+  },
+  "tls.certificate_revoked": {
+    "plan": "Immediately remove the revoked certificate from service, revoke or rotate the affected private key, and install a replacement certificate. Investigate the revocation reason with the issuing CA.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc5280", "https://datatracker.ietf.org/doc/html/rfc6960"]
+  },
+  "tls.weak_rsa_key": {
+    "plan": "Replace the RSA key with at least 2048-bit RSA or a modern elliptic-curve key and reissue the certificate.",
+    "references": ["https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final"]
+  },
+  "tls.sha1_signature": {
+    "plan": "Reissue the certificate using a modern SHA-256-or-stronger signature algorithm.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc9155"]
+  },
+  "tls.legacy_protocol": {
+    "plan": "Disable TLS 1.0 and TLS 1.1 in the origin, load balancer, and CDN configuration; retain TLS 1.2 or newer.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc8996", "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"]
+  },
+  "dns.no_caa": {
+    "plan": "Publish a restrictive CAA record listing only the certificate authorities authorized to issue for this domain, then verify it at the authoritative DNS provider.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc8659"]
+  },
+  "dns.dnssec_missing": {
+    "plan": "Enable DNSSEC signing at the authoritative DNS provider and publish the matching DS record at the parent zone. Confirm validation with a validating resolver.",
+    "references": ["https://www.icann.org/resources/pages/dnssec-what-is-it-why-important-2019-03-05-en"]
+  },
+  "http.no_https_redirect": {
+    "plan": "Redirect HTTP requests to HTTPS at the edge and preserve the original host and path safely.",
+    "references": ["https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"]
+  },
+  "http.no_hsts": {
+    "plan": "After confirming HTTPS works across all subdomains, send Strict-Transport-Security with an appropriate max-age; add includeSubDomains only when every subdomain is ready.",
+    "references": ["https://datatracker.ietf.org/doc/html/rfc6797"]
+  },
+  "http.no_csp": {
+    "plan": "Define a Content-Security-Policy from the application's required sources, test in report-only mode, then enforce it.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP", "https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html"]
+  },
+  "http.no_frame_protection": {
+    "plan": "Set frame-ancestors in Content-Security-Policy; use X-Frame-Options for legacy browser compatibility.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options"]
+  },
+  "http.no_nosniff": {
+    "plan": "Set X-Content-Type-Options: nosniff and ensure responses use accurate Content-Type values.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options"]
+  },
+  "http.no_referrer_policy": {
+    "plan": "Set a Referrer-Policy that limits cross-origin URL disclosure, such as strict-origin-when-cross-origin, and verify flows that rely on referrer data.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"]
+  },
+  "http.no_permissions_policy": {
+    "plan": "Set a Permissions-Policy that disables browser features the application does not need, and allow only origins that require each feature.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy"]
+  },
+  "http.cookie_insecure": {
+    "plan": "Set Secure and HttpOnly on session cookies and choose an appropriate SameSite policy; validate cross-site flows before rollout.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie", "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html"]
+  },
+  "http.cookie_samesite": {
+    "plan": "Set SameSite=Lax or Strict for same-site session flows; use SameSite=None; Secure only when a cross-site cookie is required and protected by CSRF controls.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie", "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"]
+  },
+  "http.mixed_content": {
+    "plan": "Serve active page resources over HTTPS, update hard-coded HTTP URLs, and enforce a Content-Security-Policy upgrade-insecure-requests directive after testing.",
+    "references": ["https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/upgrade-insecure-requests"]
+  }
+}

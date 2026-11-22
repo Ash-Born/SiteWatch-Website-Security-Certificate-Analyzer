@@ -1,0 +1,42 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# ---- Virtual environments ----
+venv/
+.venv/
+env/
+
+# ---- Frontend build artifacts and deps ----
+frontend/node_modules/
+frontend/dist/
+
+# ---- Database (never bake the DB into the image) ----
+scanner.db
+*.db
+
+# ---- Git ----
+.git/
+.gitignore
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Env files ----
+.env
+*.env
+
+# ---- Docs / misc ----
+README.md
+mock_report.pdf

@@ -1,0 +1,52 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# Env files
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Databases
+*.db
+scanner.db
+vulnerability_scanner.db
+
+# Reports & PDF outputs
+*.pdf
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+dist/
+.oxlint/
+
+

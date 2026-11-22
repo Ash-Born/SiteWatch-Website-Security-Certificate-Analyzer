@@ -1,0 +1,80 @@
+# =============================================================
+#   Website Security Analyzer – Full Stack
+#  Services: db (MySQL) + api (FastAPI) + frontend (React / Nginx)
+#  Usage:
+#    docker compose up --build          # start everything
+#    docker compose up --build -d       # detached mode
+#    docker compose down -v             # stop and remove volumes
+# =============================================================
+services:
+
+  # ----------------------------------------------------------
+  # Database: MySQL service
+  # ----------------------------------------------------------
+  db:
+    image: mysql:8.4
+    container_name: website-audit-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: website_audit
+      MYSQL_USER: scanner
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - scanner-net
+
+  # ----------------------------------------------------------
+  # Backend: FastAPI application
+  # ----------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: website-audit-api
+    ports:
+      - "8001:8000"          # ৮০০০ পোর্ট ব্যস্ত থাকায় ৮০০১ করা হলো
+    env_file: .env
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=mysql+pymysql://scanner:${MYSQL_PASSWORD}@db:3306/website_audit
+      - AVATAR_STORAGE_DIR=/app/uploads/avatars
+    volumes:
+      - avatar_data:/app/uploads/avatars
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - scanner-net
+
+  # ----------------------------------------------------------
+  # Frontend: React application served by Nginx
+  # ----------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: website-audit-frontend
+    ports:
+      - "3001:80"            # http://localhost:3001
+    depends_on:
+      - api
+    networks:
+      - scanner-net
+
+networks:
+  scanner-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  avatar_data:
