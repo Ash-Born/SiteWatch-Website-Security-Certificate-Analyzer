@@ -50,3 +50,7 @@ dist/
 .oxlint/
 
 
+uploads/
+*.sealed
+eval*
+_sortie*
